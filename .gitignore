@@ -1,6 +1,21 @@
-*
-!*/
-!*.py
-!*.ipynb
-!*.pdf
-!.gitignore
+.vscode/
+co-routines/**
+object_detection/labelImg/**
+object_detection/yolov5/**
+object_detection/yolo/data/**
+object_detection/yolo/archive.zip
+object_detection/yolo/__pycache__/**
+pytorch/jovian_guy/05b-cifar10-resnet/05b-cifar10-resnet-v-16/data/**
+pytorch/jovian_guy/06-mnist-gan/06-mnist-gan-v-12/data/**
+pytorch/jovian_guy/05b-cifar10-resnet/05b-cifar10-resnet-v-16/cifar10-resnet9.pth
+pytorch/jovian_guy/05b-cifar10-resnet/05b-cifar10-resnet-v-16/cifar10.tgz
+object_detection/yolo/overfit.pth.tar
+
+**/data/
+# *
+# object_detection
+# !*/
+# !*.py
+# !*.ipynb
+# !*.pdf
+# !.gitignore
