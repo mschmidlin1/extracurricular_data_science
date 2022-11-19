@@ -24,7 +24,8 @@ from utils import (
 from loss import YoloLoss
 import os
 
-os. chdir(r"C:\Users\Mike's PC\Desktop\extra_curricular_data_science\object_detection\yolo")
+os.chdir(r"C:\Users\Mike's PC\Desktop\extra_curricular_data_science\object_detection\yolo")
+# print(os.getcwd())
 # print(os.listdir())
 # exit()
 
@@ -36,13 +37,14 @@ LEARNING_RATE = 2e-5
 DEVICE = "cuda" if torch.cuda.is_available else "cpu"
 BATCH_SIZE = 16 # 64 in original paper but I don't have that much vram, grad accum?
 WEIGHT_DECAY = 0
-EPOCHS = 1000
+EPOCHS = 100
 NUM_WORKERS = 2
+NUM_CLASSES = 2
 PIN_MEMORY = True
 LOAD_MODEL = False
-LOAD_MODEL_FILE = "overfit.pth.tar"
-IMG_DIR = "data\images"
-LABEL_DIR = "data\labels"
+LOAD_MODEL_FILE = "custom_overfit.pth.tar"
+IMG_DIR = "custom_data\images"
+LABEL_DIR = "custom_data\labels"
 
 
 class Compose(object):
@@ -79,24 +81,23 @@ def train_fn(train_loader, model, optimizer, loss_fn):
 
 
 def main():
-    model = Yolov1(split_size=7, num_boxes=2, num_classes=20).to(DEVICE)
-    optimizer = optim.Adam(
-        model.parameters(), lr=LEARNING_RATE, weight_decay=WEIGHT_DECAY
-    )
-    loss_fn = YoloLoss()
+    model = Yolov1(split_size=7, num_boxes=2, num_classes=NUM_CLASSES).to(DEVICE)
+    optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE, weight_decay=WEIGHT_DECAY)
+    loss_fn = YoloLoss(C=NUM_CLASSES)
 
     if LOAD_MODEL:
         load_checkpoint(torch.load(LOAD_MODEL_FILE), model, optimizer)
 
     train_dataset = VOCDataset(
-        "data\\100examples.csv",
+        "custom_data.txt",
         transform=transform,
         img_dir=IMG_DIR,
         label_dir=LABEL_DIR,
+        C=NUM_CLASSES
     )
 
     test_dataset = VOCDataset(
-        "data\\test.csv", transform=transform, img_dir=IMG_DIR, label_dir=LABEL_DIR,
+        "custom_data.txt", transform=transform, img_dir=IMG_DIR, label_dir=LABEL_DIR,C=NUM_CLASSES
     )
 
     train_loader = DataLoader(
@@ -129,7 +130,7 @@ def main():
         #    sys.exit()
 
         pred_boxes, target_boxes = get_bboxes(
-            train_loader, model, iou_threshold=0.5, threshold=0.4
+            train_loader, model, iou_threshold=0.5, threshold=0.4, num_classes=NUM_CLASSES
         )
 
         mean_avg_prec = mean_average_precision(
@@ -137,7 +138,7 @@ def main():
         )
         print(f"Train mAP: {mean_avg_prec}")
 
-        if mean_avg_prec > 0.8:
+        if mean_avg_prec > 0.7:
            checkpoint = {
                "state_dict": model.state_dict(),
                "optimizer": optimizer.state_dict(),

@@ -40,8 +40,8 @@ class VOCDataset(torch.utils.data.Dataset):
         boxes = torch.tensor(boxes)
 
         if self.transform:
-            image = self.transform(image)
-            # image, boxes = self.transform(image, boxes)
+            # image = self.transform(image)
+            image, boxes = self.transform(image, boxes)
 
         # Convert To Cells
         label_matrix = torch.zeros((self.S, self.S, self.C + 5 * self.B))
@@ -73,16 +73,16 @@ class VOCDataset(torch.utils.data.Dataset):
             # If no object already found for specific cell i,j
             # Note: This means we restrict to ONE object
             # per cell!
-            if label_matrix[i, j, 20] == 0:
+            if label_matrix[i, j, (self.C + 5 * self.B)-10] == 0:
                 # Set that there exists an object
-                label_matrix[i, j, 20] = 1
+                label_matrix[i, j, (self.C + 5 * self.B)-10] = 1
 
                 # Box coordinates
                 box_coordinates = torch.tensor(
                     [x_cell, y_cell, width_cell, height_cell]
                 )
 
-                label_matrix[i, j, 21:25] = box_coordinates
+                label_matrix[i, j, (self.C + 5 * self.B)-9:(self.C + 5 * self.B)-5] = box_coordinates
 
                 # Set one hot encoding for class_label
                 label_matrix[i, j, class_label] = 1

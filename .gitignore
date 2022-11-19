@@ -10,6 +10,7 @@ pytorch/jovian_guy/06-mnist-gan/06-mnist-gan-v-12/data/**
 pytorch/jovian_guy/05b-cifar10-resnet/05b-cifar10-resnet-v-16/cifar10-resnet9.pth
 pytorch/jovian_guy/05b-cifar10-resnet/05b-cifar10-resnet-v-16/cifar10.tgz
 object_detection/yolo/overfit.pth.tar
+object_detection/yolo/custom_data
 
 **/data/
 # *
